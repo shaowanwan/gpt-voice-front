@@ -14,7 +14,7 @@ export default function Chat() {
     const audioRef = useRef(null);
     const [audioLoading, setAudioLoading] = useState(false);
     const [currentAudioPath, setCurrentAudioPath] = useState(null);
-    const API_BASE_URL = 'http://localhost:5001';
+    const API_BASE_URL = 'http://gptvoice.model1235.com';
 
     // 说话人选项
     const speakers = [
