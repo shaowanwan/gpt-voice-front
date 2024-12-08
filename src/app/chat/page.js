@@ -9,10 +9,25 @@ export default function Chat() {
     ]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
+    const [speaker, setSpeaker] = useState(0);
+    const [emotion, setEmotion] = useState('Neutral');
     const audioRef = useRef(null);
     const [audioLoading, setAudioLoading] = useState(false);
     const [currentAudioPath, setCurrentAudioPath] = useState(null);
-    const API_BASE_URL = 'http://192.168.2.110:5001';
+    const API_BASE_URL = 'http://localhost:5001';
+
+    // 说话人选项
+    const speakers = [
+        { id: 0, name: '0' },
+    ];
+
+    // 情感选项
+    const emotions = [
+        { id: 'Neutral', name: 'Neutral' },
+        { id: 'Happy', name: 'Happy' },
+        { id: 'Sad', name: 'Sad' },
+        { id: 'Angry', name: 'Angry' },
+    ];
 
     const playAudio = async (audioPath) => {
         if (!audioPath) return;
@@ -37,7 +52,7 @@ export default function Chat() {
                 }
             }
         } catch (err) {
-            console.error('音频播放失败:', err);
+            console.error('Play audio failed:', err);
         } finally {
             setAudioLoading(false);
         }
@@ -48,7 +63,7 @@ export default function Chat() {
         const audio = audioRef.current;
         if (audio) {
             const handleError = (e) => {
-                console.error('音频错误:', e);
+                console.error('Audio error:', e);
                 setAudioLoading(false);
             };
 
@@ -69,6 +84,8 @@ export default function Chat() {
         try {
             const res = await axios.post(`${API_BASE_URL}/gpt`, {
                 prompt: newMessages.map((msg) => `${msg.role}: ${msg.content}`).join('\n'),
+                speaker: speaker,
+                emotion: emotion
             });
 
             // 添加助手消息到聊天记录
@@ -88,7 +105,7 @@ export default function Chat() {
             console.error('Error:', err);
             const errorMessage = {
                 role: 'assistant',
-                content: '请求失败，请检查后端是否正常运行。'
+                content: 'Fail'
             };
             setMessages([...newMessages, errorMessage]);
         } finally {
@@ -105,7 +122,49 @@ export default function Chat() {
 
     return (
         <div style={{ padding: '20px', fontFamily: 'Arial', maxWidth: '800px', margin: '0 auto' }}>
-            <h1>GPT 实时聊天</h1>
+            <h1>Chat</h1>
+            {/* 控制面板 */}
+            <div style={{
+                marginBottom: '20px',
+                padding: '15px',
+                backgroundColor: '#f8f9fa',
+                borderRadius: '8px',
+                display: 'flex',
+                gap: '20px'
+            }}>
+                <div>
+                    <label style={{ marginRight: '10px' }}>Speaker：</label>
+                    <select
+                        value={speaker}
+                        onChange={(e) => setSpeaker(e.target.value)}
+                        style={{
+                            padding: '5px',
+                            borderRadius: '4px',
+                            border: '1px solid #ccc'
+                        }}
+                    >
+                        {speakers.map(s => (
+                            <option key={s.id} value={s.id}>{s.name}</option>
+                        ))}
+                    </select>
+                </div>
+                <div>
+                    <label style={{ marginRight: '10px' }}>Emotion：</label>
+                    <select
+                        value={emotion}
+                        onChange={(e) => setEmotion(e.target.value)}
+                        style={{
+                            padding: '5px',
+                            borderRadius: '4px',
+                            border: '1px solid #ccc'
+                        }}
+                    >
+                        {emotions.map(e => (
+                            <option key={e.id} value={e.id}>{e.name}</option>
+                        ))}
+                    </select>
+                </div>
+            </div>
             <div
                 style={{
                     border: '1px solid #ccc',
@@ -138,7 +197,7 @@ export default function Chat() {
                             }}
                         >
                             <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
-                                {msg.role === 'user' ? '用户' : 'GPT'}
+                                {msg.role === 'user' ? 'User' : 'GPT'}
                             </div>
                             <div style={{ wordBreak: 'break-word' }}>{msg.content}</div>
                             {msg.audioPath && (
@@ -156,7 +215,7 @@ export default function Chat() {
                                         opacity: audioLoading && currentAudioPath === msg.audioPath ? 0.6 : 1,
                                     }}
                                 >
-                                    {audioLoading && currentAudioPath === msg.audioPath ? '加载中...' : '播放音频'}
+                                    {audioLoading && currentAudioPath === msg.audioPath ? 'Loading...' : 'Play'}
                                 </button>
                             )}
                         </div>
@@ -169,7 +228,7 @@ export default function Chat() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    placeholder="输入消息... (按Enter发送)"
+                    placeholder="Type... (Press Enter To Send)"
                     style={{
                         flex: 1,
                         padding: '12px',
@@ -193,7 +252,7 @@ export default function Chat() {
                     }}
                     disabled={loading}
                 >
-                    {loading ? '发送中...' : '发送'}
+                    {loading ? 'Sending...' : 'Send'}
                 </button>
             </div>
             <audio
