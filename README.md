@@ -1,36 +1,125 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# GPT 语音聊天前端
 
-## Getting Started
+这是一个基于 React 的实时聊天应用，支持与 GPT 进行对话并获取语音回复。
 
-First, run the development server:
+## 功能特点
+
+- 实时文本对话
+- GPT响应自动语音播放
+- 支持重新播放历史语音
+- 响应式设计
+- 支持快捷键操作
+
+## 技术栈
+
+- React 18+
+- Axios
+- Next.js
+
+## 安装与运行
+
+1. 安装依赖：
+
+```bash
+npm install
+# 或
+yarn install
+```
+
+2. 运行开发服务器：
 
 ```bash
 npm run dev
-# or
+# 或
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+应用将在 `http://localhost:3000` 启动。
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 目录结构
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+  ├── app/
+  │   └── page.js    # 主页面组件
+  ├── components/
+  │   └── Chat.js    # 聊天组件
+  └── package.json
+```
 
-## Learn More
+## 环境要求
 
-To learn more about Next.js, take a look at the following resources:
+- Node.js 16+
+- npm 7+ 或 yarn 1.22+
+- 后端服务器需在 `http://localhost:5001` 运行
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 配置说明
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+如需修改后端 API 地址，请在 `Chat.js` 中更新：
 
-## Deploy on Vercel
+```javascript
+const API_BASE_URL = 'http://localhost:5001';  // 修改为你的后端地址
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 使用说明
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. 在输入框中输入消息
+2. 按回车键或点击发送按钮发送消息
+3. GPT 回复会自动播放语音
+4. 点击"播放音频"按钮可重新播放语音
+
+## 键盘快捷键
+
+- `Enter`: 发送消息
+- `Shift + Enter`: 输入框换行
+
+## API 接口
+
+### 发送消息
+
+```javascript
+POST /gpt
+Content-Type: application/json
+
+{
+  "prompt": "用户: 你好\nassistant: 您好！"
+}
+```
+
+响应格式：
+
+```javascript
+{
+  "response": "GPT的回复文本",
+  "audio_path": "语音文件路径.wav"
+}
+```
+
+### 获取音频
+
+```javascript
+GET /audio/{audio_path}
+```
+
+## 常见问题
+
+1. **音频无法播放**
+    - 检查后端服务是否正常运行
+    - 确认浏览器允许音频播放
+    - 检查控制台是否有错误信息
+
+2. **消息发送失败**
+    - 确认后端服务地址配置正确
+    - 检查网络连接
+    - 查看浏览器控制台错误信息
+
+## 开发注意事项
+
+1. 所有的 API 请求都应该包含错误处理
+2. 音频播放需要考虑兼容性问题
+3. 注意处理并发请求和加载状态
+4. 保持用户界面的响应性
+
+## 许可证
+
+MIT License
