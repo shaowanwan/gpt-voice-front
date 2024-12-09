@@ -117,8 +117,71 @@ export default function Chat() {
     };
 
     return (
-        <div style={{ padding: '20px', fontFamily: 'Arial', maxWidth: '800px', margin: '0 auto' }}>
-            <h1>Chat</h1>
+        <div style={{padding: '20px', fontFamily: 'Arial', maxWidth: '800px', margin: '0 auto'}}>
+            <div style={{
+                marginBottom: '24px',
+                padding: '24px',
+                backgroundColor: '#f8f9fa',
+                borderRadius: '12px',
+                border: '1px solid #e9ecef',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+            }}>
+                <h2 style={{
+                    fontSize: '1.5rem',
+                    fontWeight: 'bold',
+                    marginBottom: '12px',
+                    color: '#2c3e50',
+                    borderBottom: '2px solid #3498db',
+                    paddingBottom: '8px'
+                }}>Emotional ChatBot</h2>
+
+                <p style={{
+                    fontSize: '1.1rem',
+                    color: '#34495e',
+                    marginBottom: '16px',
+                    fontStyle: 'italic'
+                }}>A Constructive Approach in Video Games</p>
+
+                <ul style={{
+                    listStyle: 'none',
+                    padding: '0',
+                    margin: '16px 0',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '8px'
+                }}>
+                    {['Liang Shaowan', 'Xie Yinzhi', 'Yi Sheng', 'Lu Jing', 'Shen Phillip'].map(name => (
+                        <li style={{
+                            padding: '4px 12px',
+                            backgroundColor: '#e3f2fd',
+                            borderRadius: '16px',
+                            color: '#1976d2',
+                            fontSize: '0.95rem'
+                        }}>{name}</li>
+                    ))}
+                </ul>
+
+                <div style={{
+                    marginTop: '16px',
+                    backgroundColor: 'white',
+                    padding: '16px',
+                    borderRadius: '8px',
+                    border: '1px solid #e3e3e3'
+                }}>
+                    <strong style={{
+                        display: 'block',
+                        marginBottom: '8px',
+                        color: '#2c3e50',
+                        fontSize: '1.1rem'
+                    }}>Description:</strong>
+                    <p style={{
+                        lineHeight: '1.6',
+                        color: '#34495e',
+                        fontSize: '0.95rem'
+                    }}>This project enables users to type text, which is analyzed by an emotion detection model to identify one of five emotions: Angry, Happy, Sad, Neutral, or Surprise. Based on the detected emotion, a TTS system generates an emotionally aligned voice response. Users can also select from multiple speakers, each with distinct voices and tones, for a personalized, engaging experience. Perfect for gaming, virtual assistants, and storytelling applications.</p>
+                </div>
+            </div>
+
             {/* 控制面板 */}
             <div style={{
                 marginBottom: '20px',
@@ -129,7 +192,7 @@ export default function Chat() {
                 gap: '20px'
             }}>
                 <div>
-                    <label style={{ marginRight: '10px' }}>Speaker：</label>
+                    <label style={{marginRight: '10px'}}>Speaker：</label>
                     <select
                         value={speaker}
                         onChange={(e) => setSpeaker(Number(e.target.value))}
@@ -176,10 +239,10 @@ export default function Chat() {
                                 boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
                             }}
                         >
-                            <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+                            <div style={{fontWeight: 'bold', marginBottom: '4px'}}>
                                 {msg.role === 'user' ? 'User' : msg.speakerName}
                             </div>
-                            <div style={{ wordBreak: 'break-word' }}>{msg.content}</div>
+                            <div style={{wordBreak: 'break-word'}}>{msg.content}</div>
                             {msg.audioPath && (
                                 <button
                                     onClick={() => playAudio(msg.audioPath)}
@@ -202,7 +265,7 @@ export default function Chat() {
                     </div>
                 ))}
             </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div style={{display: 'flex', gap: '10px'}}>
                 <input
                     type="text"
                     value={input}
@@ -237,7 +300,7 @@ export default function Chat() {
             </div>
             <audio
                 ref={audioRef}
-                style={{ display: 'none' }}
+                style={{display: 'none'}}
                 controls
                 preload="auto"
             />
