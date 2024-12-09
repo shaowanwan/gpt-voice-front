@@ -4,9 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 
 export default function Chat() {
-    const [messages, setMessages] = useState([
-        { role: 'assistant', content: 'What can I help you?' },
-    ]);
+    const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const [speaker, setSpeaker] = useState(0);
@@ -18,15 +16,9 @@ export default function Chat() {
 
     // 说话人选项
     const speakers = [
-        { id: 0, name: '0' },
-    ];
-
-    // 情感选项
-    const emotions = [
-        { id: 'Neutral', name: 'Neutral' },
-        { id: 'Happy', name: 'Happy' },
-        { id: 'Sad', name: 'Sad' },
-        { id: 'Angry', name: 'Angry' },
+        { id: 0, name: 'Geralt' },
+        { id: 1, name: 'Vesemir' },
+        { id: 2, name: 'Emhyr' },
     ];
 
     const playAudio = async (audioPath) => {
@@ -75,6 +67,8 @@ export default function Chat() {
     const sendMessage = async () => {
         if (!input.trim()) return;
 
+        const currentSpeakerName = speakers[Number(speaker)].name;
+
         // 添加用户消息到聊天记录
         const newMessages = [...messages, { role: 'user', content: input }];
         setMessages(newMessages);
@@ -88,11 +82,12 @@ export default function Chat() {
                 emotion: emotion
             });
 
-            // 添加助手消息到聊天记录
+            // 添加助手消息到聊天记录，包含当前的说话人名字
             const assistantMessage = {
                 role: 'assistant',
                 content: res.data.response,
-                audioPath: res.data.audio_path
+                audioPath: res.data.audio_path,
+                speakerName: currentSpeakerName  // 保存当前的说话人名字
             };
             setMessages([...newMessages, assistantMessage]);
 
@@ -105,7 +100,8 @@ export default function Chat() {
             console.error('Error:', err);
             const errorMessage = {
                 role: 'assistant',
-                content: 'Fail'
+                content: 'Fail',
+                speakerName: currentSpeakerName
             };
             setMessages([...newMessages, errorMessage]);
         } finally {
@@ -136,7 +132,7 @@ export default function Chat() {
                     <label style={{ marginRight: '10px' }}>Speaker：</label>
                     <select
                         value={speaker}
-                        onChange={(e) => setSpeaker(e.target.value)}
+                        onChange={(e) => setSpeaker(Number(e.target.value))}
                         style={{
                             padding: '5px',
                             borderRadius: '4px',
@@ -145,22 +141,6 @@ export default function Chat() {
                     >
                         {speakers.map(s => (
                             <option key={s.id} value={s.id}>{s.name}</option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <label style={{ marginRight: '10px' }}>Emotion：</label>
-                    <select
-                        value={emotion}
-                        onChange={(e) => setEmotion(e.target.value)}
-                        style={{
-                            padding: '5px',
-                            borderRadius: '4px',
-                            border: '1px solid #ccc'
-                        }}
-                    >
-                        {emotions.map(e => (
-                            <option key={e.id} value={e.id}>{e.name}</option>
                         ))}
                     </select>
                 </div>
@@ -197,7 +177,7 @@ export default function Chat() {
                             }}
                         >
                             <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
-                                {msg.role === 'user' ? 'User' : 'GPT'}
+                                {msg.role === 'user' ? 'User' : msg.speakerName}
                             </div>
                             <div style={{ wordBreak: 'break-word' }}>{msg.content}</div>
                             {msg.audioPath && (
