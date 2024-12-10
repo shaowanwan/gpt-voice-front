@@ -17,8 +17,9 @@ export default function Chat() {
     // 说话人选项
     const speakers = [
         { id: 0, name: 'Geralt' },
-        { id: 1, name: 'Vesemir' },
-        { id: 2, name: 'Emhyr' },
+        { id: 1, name: 'Cirilla'},
+        { id: 2, name: 'Vesemir' },
+        { id: 3, name: 'Emhyr' },
     ];
 
     const playAudio = async (audioPath) => {
